@@ -12,6 +12,11 @@ namespace Afleveringsopgave_3
 {
     public partial class Form1 : Form
     {
+        //Variables to be shared between methods
+        public double TotalSale { get; set; }
+        public double TotalCost { get; set; }
+        public double TotalIncome { get; set; }
+
         public Form1()
         {
             InitializeComponent();
@@ -19,51 +24,63 @@ namespace Afleveringsopgave_3
             ResetBoxes();
         }
 
+        //Event for adding the entered game day data to the list
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            //Constants for calculations
-            const double SaleFromShopvisitsPercent = 0.20;
-            const int TicketPriceAvg = 175;
-            const int SaleBeverageAvg = 70;
-            const int SaleSportsGoodsAvg = 245;
-            const int SubscriptionPrice6Months = 999;
-            const int TvRightsPerChannel = 1000000;
-            const double TotalCostsPercent = 0.64;
+            try
+            {
+                //Constants for calculations
+                const double SaleFromShopvisitsPercent = 0.20;
+                const int TicketPriceAvg = 175;
+                const int SaleBeverageAvg = 70;
+                const int SaleSportsGoodsAvg = 245;
+                const int SubscriptionPrice6Months = 999;
+                const int TvRightsPerChannel = 1000000;
+                const double TotalCostsPercent = 0.64;
 
-            //Input variables for calculations
-            int ticketsSold = Convert.ToInt32(TicketsSoldTextBox.Text);
-            int channelsCoverage = Convert.ToInt32(TvCoverageBox.Text);
-            int visitsSportsshop = Convert.ToInt32(ShopVisitorsBox.Text);
-            int motionSubscription = Convert.ToInt32(FitnessSubBox.Text);
-            double attendenceShowup = Convert.ToDouble(AttendanceBox.Text) / 100;
+                //Input variables for calculations
+                int ticketsSold = Convert.ToInt32(TicketsSoldTextBox.Text);
+                int channelsCoverage = Convert.ToInt32(TvCoverageBox.Text);
+                int visitsSportsshop = Convert.ToInt32(ShopVisitorsBox.Text);
+                int motionSubscription = Convert.ToInt32(FitnessSubBox.Text);
+                double attendenceShowup = Convert.ToDouble(AttendanceBox.Text) / 100;
 
-            //Line item calculations
-            double saleFromShop = ((double)visitsSportsshop * SaleFromShopvisitsPercent) * (double)SaleSportsGoodsAvg;
-            int ticketSaleIncome = TicketPriceAvg * ticketsSold;
-            int subscriptionIncome = (SubscriptionPrice6Months * 2) * motionSubscription;
-            int TvRightsIncome = TvRightsPerChannel * channelsCoverage;
-            double beverageIncome = ((double)ticketsSold * attendenceShowup) * (double)SaleBeverageAvg;
+                //Line item calculations
+                double saleFromShop = ((double)visitsSportsshop * SaleFromShopvisitsPercent) * (double)SaleSportsGoodsAvg;
+                int ticketSaleIncome = TicketPriceAvg * ticketsSold;
+                int subscriptionIncome = (SubscriptionPrice6Months * 2) * motionSubscription;
+                int TvRightsIncome = TvRightsPerChannel * channelsCoverage;
+                double beverageIncome = ((double)ticketsSold * attendenceShowup) * (double)SaleBeverageAvg;
 
-            //Calculate the totals for a given game day
-            double totalSale = ticketSaleIncome + subscriptionIncome + TvRightsIncome + (double)beverageIncome + (double)saleFromShop;
-            double costs = totalSale * TotalCostsPercent;
-            double income = totalSale - costs;
+                //Calculate the totals for a given game day
+                double Sale = ticketSaleIncome + subscriptionIncome + TvRightsIncome + (double)beverageIncome + (double)saleFromShop;
+                double costs = Sale * TotalCostsPercent;
+                double income = Sale - costs;
 
-            ListViewItem newList = new ListViewItem(CalendarBox.Text);
-            newList.SubItems.Add(totalSale.ToString("C"));
-            newList.SubItems.Add(costs.ToString("C"));
-            newList.SubItems.Add(income.ToString("C"));
-            listView1.Items.Add(newList);
+                //Adding to the overall total figures instantiated in the beginning of the code
+                TotalSale += Sale;
+                TotalCost += costs;
+                TotalIncome += income;
+
+                //Adding the game day data to the list view
+                ListViewItem newList = new ListViewItem(CalendarBox.Text);
+                newList.SubItems.Add(Sale.ToString("C"));
+                newList.SubItems.Add(costs.ToString("C"));
+                newList.SubItems.Add(income.ToString("C"));
+                listView1.Items.Add(newList);
+            }
+            catch (FormatException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         //Event for stop adding game day data and calculate the totals
         private void CalculateButton_Click(object sender, EventArgs e)
         {
-            double sale = 0;
-            for (int x = 0; x < listView1.Items.Count; ++x)
-            {
-                sale = double.Parse(listView1.Items[x].SubItems[2].Text);
-            }
+            TotalSaleTextBox.Text = TotalSale.ToString("C");
+            CostBox.Text = TotalCost.ToString("C");
+            IncomeBox.Text = TotalIncome.ToString("C");
         }
 
         //Event for reset button which is calling the ResetBoxes method
@@ -99,6 +116,5 @@ namespace Afleveringsopgave_3
             this.FitnessSubBox.Text = "0";
             AttendanceBox.Text = "0";
         }
-
     }
 }
