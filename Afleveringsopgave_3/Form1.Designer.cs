@@ -331,6 +331,7 @@
             this.Sale,
             this.Costs,
             this.Income});
+            this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(23, 386);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(600, 155);

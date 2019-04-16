@@ -13,9 +13,9 @@ namespace Afleveringsopgave_3
     public partial class Form1 : Form
     {
         //Variables to be shared between methods
-        public double TotalSale { get; set; }
-        public double TotalCost { get; set; }
-        public double TotalIncome { get; set; }
+        public double TotalSale;
+        public double TotalCost;
+        public double TotalIncome;
 
         public Form1()
         {
@@ -63,11 +63,11 @@ namespace Afleveringsopgave_3
                 TotalIncome += income;
 
                 //Adding the game day data to the list view
-                ListViewItem newList = new ListViewItem(CalendarBox.Text);
-                newList.SubItems.Add(Sale.ToString("C"));
-                newList.SubItems.Add(costs.ToString("C"));
-                newList.SubItems.Add(income.ToString("C"));
-                listView1.Items.Add(newList);
+                ListViewItem newItem = new ListViewItem(CalendarBox.Text);
+                newItem.SubItems.Add(Sale.ToString("C"));
+                newItem.SubItems.Add(costs.ToString("C"));
+                newItem.SubItems.Add(income.ToString("C"));
+                listView1.Items.Add(newItem);
             }
             catch (FormatException ex)
             {
